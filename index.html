@@ -7,49 +7,17 @@
   <body>
 
     
-    <script>
- (function() {
-  // Helper to check if we're on checkout/thank you pages
-  const isCheckoutPage = window.location.pathname.includes('/checkout');
-  const isThankYouPage = window.location.pathname.includes('/thank_you');
-  
-  // Don't load on regular checkout pages
-  if (isCheckoutPage && !isThankYouPage) {
-    return;
-  }
-
-  // Function to initialize the widget
-  const initializeWidget = () => {
-    // Add CSS first
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://feedbackstack.test/js/core/style.css';
-    document.head.appendChild(link);
+   <script>
+(() => {
+    // Load CSS
+    document.head.insertAdjacentHTML('beforeend', 
+        '<link rel="stylesheet" href="https://feedbackstack.test/js/core/style.css">');
     
-    // Then load JS
+    // Load and initialize widget
     const script = document.createElement('script');
     script.src = `https://feedbackstack.test/js/core/script.js?token=b19bf05984da4b073b378ba2dc3ec0b5e941ea42e0bdaf52cebe7a9051396fd2&shop=${window.location.host}`;
-    script.onload = function() {
-      if (typeof FeedbackWidget === 'function') {
-        FeedbackWidget();
-      }
-    };
+    script.onload = () => window.FeedbackWidget?.();
     document.body.appendChild(script);
-  };
-
-  // If on thank you page, wait for Shopify's checkout to be ready
-  if (isThankYouPage) {
-    // Wait for Shopify's checkout object to be fully initialized
-    const waitForCheckout = setInterval(() => {
-      if (window.Shopify && window.Shopify.checkout) {
-        clearInterval(waitForCheckout);
-        setTimeout(initializeWidget, 1000); // Add a small delay after checkout is ready
-      }
-    }, 100);
-  } else {
-    // Regular page, initialize normally
-    initializeWidget();
-  }
 })();
 </script>
   </body>
